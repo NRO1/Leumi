@@ -1,16 +1,21 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import classes from "./Config.module.css";
-import axios from "axios";
 
 const Config = () => {
   const [sym, setSym] = useState(false);
   const [dup, setDup] = useState(false);
-  const [gotRes, setGotRes] = useState(false);
   const [pass, setPass] = useState("");
   const length = useRef();
 
+  const nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  const syms = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "{", "}", "[", "]", ":", "?"]
+  const uc = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "o", "P", "Q", "R", "S", "T", "U", "V",
+          "W", "X", "Y", "Z"]
+  const lc = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
+          "w", "x", "y", "z"]
+
   //form submit handler
-  const submit = async (event) => {
+  function submit(event){
     event.preventDefault();
     setPass("");
 
@@ -23,41 +28,110 @@ const Config = () => {
     form.symbols = sym;
     form.duplicates = dup;
 
-    // Define the url params to send to the backend
-    let urlParam = "";
-
     if (!form.symbols && !form.duplicates) {
-      urlParam = form.len;
+      setPass(createNoSymPass(form.len))
     } else if (form.symbols && !form.duplicates) {
-      urlParam = `${form.len}/full`;
+      setPass(createFullPass(form.len))
+    } else if (!form.symbols && form.duplicates) {
+      setPass(createPassNDnoSym(form.len)) 
     } else if (form.symbols && form.duplicates) {
-      urlParam = `${form.len}/fullnd`;
+      setPass(createFullPassND(form.len))
     }
-
-    // Fetch the password from the backend
-    let passArray = [];
-
-    let config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "*/*"
-      }
-    }
-
-    await axios
-      .get(`http://ec2-18-185-69-87.eu-central-1.compute.amazonaws.com:8000/${urlParam}`, config)
-      .then(function (response) {
-        for (const el of response.data.password) {
-          passArray.push(el);
-        }
-      });
-      
-      let flatPass = passArray.join("");
-      setGotRes(true);
-      setPass(flatPass);
-    ;
   };
 
+
+  function createNoSymPass(len) {
+    let pass = []
+    for (let i = 1; i <= len; i++ ) {
+        let randChoice = Math.floor(Math.random() * 4)
+            if (randChoice === 0) {
+                let randNum = Math.floor(Math.random() * nums.length)
+                pass.push(nums[randNum])
+            } else if (randChoice === 2) {
+                let randLc = Math.floor(Math.random() * lc.length)
+                pass.push(lc[randLc])
+            } else {
+                let randUc = Math.floor(Math.random() * uc.length)
+                pass.push(uc[randUc])
+            }
+        }
+
+        let flatPass = pass.join("");
+        return flatPass
+    };
+
+  function createFullPass(len) {
+      let pass = []
+  
+      for (let i = 1; i <= len; i++ ) {
+          let randChoice = Math.floor(Math.random() * 4)
+              if (randChoice === 0) {
+                  let randNum = Math.floor(Math.random() * nums.length)
+                  pass.push(nums[randNum])
+              } else if (randChoice === 1) {
+                  let randSym = Math.floor(Math.random() * syms.length)
+                  pass.push(syms[randSym])
+              } else if (randChoice === 2) {
+                  let randLc = Math.floor(Math.random() * lc.length)
+                  pass.push(lc[randLc])
+              } else {
+                  let randUc = Math.floor(Math.random() * uc.length)
+                  pass.push(uc[randUc])
+              }
+          }
+      let flatPass = pass.join("");
+      return flatPass;
+  };
+
+  function createPassNDnoSym(len){
+    let passSet = new Set()
+    let passArr = []
+
+    while(passSet.size < len ) {
+        let randChoice = Math.floor(Math.random() * 4)
+            if (randChoice === 0) {
+                let randNum = Math.floor(Math.random() * nums.length)
+                passSet.add(nums[randNum])
+            } else if (randChoice === 2) {
+                let randLc = Math.floor(Math.random() * lc.length)
+                passSet.add(lc[randLc])
+            } else {
+                let randUc = Math.floor(Math.random() * uc.length)
+                passSet.add(uc[randUc])
+            }
+        }
+
+    passArr = [...passSet]
+    let flatPass = passArr.join("");
+    return flatPass;
+}
+  
+  function createFullPassND(len){
+      let passSet = new Set()
+      let passArr = []
+  
+      while(passSet.size < len ) {
+          let randChoice = Math.floor(Math.random() * 4)
+              if (randChoice === 0) {
+                  let randNum = Math.floor(Math.random() * nums.length)
+                  passSet.add(nums[randNum])
+              } else if (randChoice === 1) {
+                  let randSym = Math.floor(Math.random() * syms.length)
+                  passSet.add(syms[randSym])
+              } else if (randChoice === 2) {
+                  let randLc = Math.floor(Math.random() * lc.length)
+                  passSet.add(lc[randLc])
+              } else {
+                  let randUc = Math.floor(Math.random() * uc.length)
+                  passSet.add(uc[randUc])
+              }
+          }
+  
+      passArr = [...passSet]
+      let flatPass = passArr.join("");
+      return flatPass;
+  }
+  
   //Symbols input handler
   const getSym = (e) => {
     setSym(e.target.checked);
@@ -90,12 +164,10 @@ const Config = () => {
           <button onClick={submit}>Generate</button>
         </div>
       </form>
-      {gotRes && (
         <div className={classes.passContainer}>
           <p>Password:</p>
           <p>{pass}</p>
         </div>
-      )}
     </div>
   );
 };
