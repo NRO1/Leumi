@@ -1,5 +1,15 @@
 pipeline {
   agent any
+
+   environment {
+        AMI = 'ami-0c0d3776ef525d5dd'
+        COUNT = '1'
+        TYPE = 't2.small'
+        KP = 'Jenkins'
+        SG = 'sg-995ea6e9'
+        SN ='subnet-9986f7f3'
+    }
+
   stages {
     stage('Build image') {
       steps {
@@ -18,32 +28,17 @@ pipeline {
             docker login -u $USERNAME -p $PASSWORD
             docker push nrdevac1/passmaker:latest
             '''
-}
-        
+          }
       }
     }
 
     stage('load EC2 with k8s') {
       steps {
-        sh 'echo "loading ec2"'
+        sh '''
+          aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN}
+        '''
       }
     }
-
-    stage('deploy image to ec2') {
-      steps {
-        sh 'echo "deploy image to ec2"'
-      }
-    }
-
   }
 }
 
-withCredentials([usernamePassword(credentialsId: 'amazon', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-  // available as an env variable, but will be masked if you try to print it out any which way
-  // note: single quotes prevent Groovy interpolation; expansion is by Bourne Shell, which is what you want
-  sh 'echo $PASSWORD'
-  // also available as a Groovy variable
-  echo USERNAME
-  // or inside double quotes for string interpolation
-  echo "username is $USERNAME"
-}
