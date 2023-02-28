@@ -11,10 +11,9 @@ pipeline {
       }
     }
 
-    stage('Push to ECR') {
+    stage('Push to Repo') {
       steps {
-        sh '''
-         docker push nrdevac1/passmaker:latest'''
+        sh 'withCredentials([usernamePassword(credentialsId: \'dh_cred\', passwordVariable: \'pass\', usernameVariable: \'user\')]) '
       }
     }
 
