@@ -1,0 +1,14 @@
+pipeline {
+  agent any
+  stages {
+    stage('') {
+      steps {
+        sh '''\'\'\'
+sh "npm install"
+sh "npm run build"
+\'\'\''''
+      }
+    }
+
+  }
+}
