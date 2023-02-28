@@ -18,5 +18,17 @@ docker push public.ecr.aws/n5h8m9x0/nro1passmaker:latest'''
       }
     }
 
+    stage('load EC2 with k8s') {
+      steps {
+        sh 'echo "loading ec2"'
+      }
+    }
+
+    stage('deploy image to ec2') {
+      steps {
+        sh 'echo "deploy image to ec2"'
+      }
+    }
+
   }
 }
