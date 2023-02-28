@@ -34,9 +34,16 @@ pipeline {
 
     stage('load EC2 with k8s') {
       steps {
-        sh '''
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+          accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+        ]]) {
+          sh '''
           aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN}
         '''
+    }
+
+        
       }
     }
   }
