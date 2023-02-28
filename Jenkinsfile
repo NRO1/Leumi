@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh '''cd passmaker
 docker build -t nro1passmaker .
-docker tag nro1passmaker:v1 public.ecr.aws/n5h8m9x0/nro1passmaker:v1
+docker tag nro1passmaker:latest public.ecr.aws/n5h8m9x0/nro1passmaker:latest
 '''
       }
     }
