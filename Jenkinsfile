@@ -1,18 +1,15 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:lts-bullseye-slim' 
-            args '-p 3000:3000' 
-        }
+  agent any
+  stages {
+    stage('install') {
+      steps {
+        echo "Installing dependencies"
+        sh '''
+          cd passmaker
+          npm install
+        '''
+      }
     }
-    stages {
-        stage('Build') { 
-            steps {
-                sh '''
-                cd passmaker
-                npm install
-                '''
-            }
-        }
-    }
+
+  }
 }
