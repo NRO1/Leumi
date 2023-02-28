@@ -4,7 +4,8 @@ pipeline {
     stage('error') {
       steps {
         sh '''cd passmaker
-ls -a'''
+docker
+npm'''
       }
     }
 
