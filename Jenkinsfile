@@ -6,7 +6,7 @@ pipeline {
         echo 'installing dependencies'
         sh '''
                 cd passmaker
-                pwd
+                npm version
                 '''
       }
     }
