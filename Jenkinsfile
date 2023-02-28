@@ -1,13 +1,12 @@
 pipeline {
   agent any
   stages {
-    stage('install') {
+    stage('') {
       steps {
-        echo 'Installing dependencies'
-        sh '''
-          cd passmaker
-          npm install
-        '''
+        dir(path: '/passmaker') {
+          sh 'npm install'
+        }
+
       }
     }
 
