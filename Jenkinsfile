@@ -14,8 +14,8 @@ pipeline {
     stage('Push to ECR') {
       steps {
         sh '''
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n5h8m9x0
-          docker push public.ecr.aws/n5h8m9x0/nro1passmaker:latest
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/g8g2r1o6
+          docker push public.ecr.aws/g8g2r1o6/passmaker:latest
           '''
       }
     }
