@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('') {
       steps {
-        dir(path: '/passmaker')
+        sh '''cd passmaker
+ll'''
       }
     }
 
