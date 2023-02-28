@@ -6,7 +6,7 @@ pipeline {
         echo "Installing dependencies"
         sh '''
           cd passmaker
-          sudo npm install
+          npm install
         '''
       }
     }
