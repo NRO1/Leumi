@@ -6,7 +6,7 @@ pipeline {
         sh '''
           cd passmaker
           docker build -t passmaker .
-          docker tag passmaker:latest public.ecr.aws/g8g2r1o6/passmaker:latest
+          docker tag passmaker:latest nrdevac1/passmaker:latest
           '''
       }
     }
@@ -14,9 +14,7 @@ pipeline {
     stage('Push to ECR') {
       steps {
         sh '''
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/g8g2r1o6
-          docker push public.ecr.aws/g8g2r1o6/passmaker:latest
-          '''
+         docker push nrdevac1/passmaker:latest'''
       }
     }
 
