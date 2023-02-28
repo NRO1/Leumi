@@ -1,13 +1,6 @@
 pipeline {
   agent any
   stages {
-    stage('Acsses ECR') {
-      steps {
-        sh '''aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n5h8m9x0
-'''
-      }
-    }
-
     stage('Build image') {
       steps {
         sh '''docker build -t nro1passmaker .
