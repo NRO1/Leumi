@@ -35,6 +35,7 @@ pipeline {
     stage('load EC2 with k8s') {
       steps {
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+          credentialsId: "aws_cred",
           accessKeyVariable: 'AWS_ACCESS_KEY_ID',
           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
         ]]) {
