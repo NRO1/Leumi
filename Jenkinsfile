@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('install') {
       steps {
-        echo "Installing dependencies"
+        echo 'Installing dependencies'
         sh '''
           cd passmaker
           npm install
