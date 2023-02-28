@@ -1,10 +1,10 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('error') {
       steps {
         sh '''cd passmaker
-ll'''
+ls -a'''
       }
     }
 
