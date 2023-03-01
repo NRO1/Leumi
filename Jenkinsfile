@@ -27,6 +27,7 @@ pipeline {
           sh '''
             docker login -u $USERNAME -p $PASSWORD
             docker push nrdevac1/passmaker:latest
+            base64 ec2_load_script.txt > ec2_laod_scripts_64.txt
             '''
           }
       }
@@ -40,8 +41,8 @@ pipeline {
           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
         ]]) {
           sh '''
-          aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN}
-        '''
+            aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN} --user-data file://ec2_laod_scripts_64.txt
+             '''
     }
 
         
