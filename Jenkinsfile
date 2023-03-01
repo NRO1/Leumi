@@ -5,7 +5,7 @@ pipeline {
         AMI = 'ami-0c0d3776ef525d5dd'
         COUNT = '1'
         TYPE = 't2.small'
-        KP = 'Jenkins'
+        KP = 'k8s_instance'
         SG = 'sg-995ea6e9'
         SN ='subnet-9986f7f3'
     }
