@@ -15,34 +15,11 @@ spec:
         app: passmaker
     spec:
       containers:
-      - name: passmaker-fe
-        image: nrdevac1/passmaker-fe:latest
+      - name: passmaker
+        image: nrdevac1/passmaker:latest
         ports:
         - containerPort: 80
         resources:
           limits: 
             memory: "500Mi"
             cpu: "500m"
-      - name: passmaker-be
-        image: nrdevac1/passmaker-be:latest
-        ports:
-        - containerPort: 8000
-        resources:
-          limits: 
-            memory: "500Mi"
-            cpu: "500m"
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: passmaker-svc
-spec:
-  selector:
-    app: passmaker
-  ports:
-  - port: 80
-    targetPort: 80
-  - port: 8000
-    targetPort: 8000

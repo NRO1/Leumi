@@ -3,10 +3,3 @@ sudo yum update -y
 sudo amazon-linux-extras install docker
 sudo service docker start
 sudo usermod -a -G docker ec2-user
-
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
-minikube start
-minikube kubectl create deployment passmaker --image=nrdevac1/passmaker:latest
-minikube kubectl expose deployment passmaker --type=LoadBalancer --port=443
