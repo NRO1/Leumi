@@ -43,7 +43,7 @@ pipeline {
           sh '''
             aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN} --user-data file://ec2_laod_scripts_64.txt
             curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-            sudo install minikube-linux-amd64 /usr/local/bin/minikube
+            install minikube-linux-amd64 /usr/local/bin/minikube
             minikube start
              '''
     }
