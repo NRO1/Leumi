@@ -6,8 +6,8 @@ pipeline {
         COUNT = '1'
         TYPE = 't2.micro'
         KP = 'k8s_instance'
-        SG = 'sg-995ea6e9'
-        SN ='sg-0ca59d5f6debb7b3b'
+        SG = 'sg-0ca59d5f6debb7b3b'
+        SN ='subnet-9986f7f3'
     }
 
   stages {
@@ -42,45 +42,6 @@ pipeline {
         ]]) {
           sh '''
             aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN} --user-data file://ec2_laod_scripts_64.txt  
-            sudo cat > ~/passmaker.yaml <<EOF
-                apiVersion: apps/v1
-                kind: Deployment
-                metadata:
-                  name: passmaker
-                  labels:
-                    app: passmaker
-                spec:
-                  replicas: 1
-                  selector:
-                    matchLabels:
-                      app: passmaker
-                  template:
-                    metadata:
-                      labels:
-                        app: passmaker
-                    spec:
-                      containers:
-                      - name: passmaker
-                        image: nrdevac1/passmaker:latest
-                        ports:
-                        - containerPort: 80
-                        resources:
-                          limits: 
-                            memory: "500Mi"
-                            cpu: "500m"
-                ---
-                apiVersion: v1
-                kind: Service
-                metadata:
-                  name: passmaker-svc
-                spec:
-                  selector:
-                    app.kubernetes.io/name: passmaker
-                  ports:
-                    - protocol: TCP
-                      port: 443
-                      targetPort: 80
-                EOF
              '''
            }
       }

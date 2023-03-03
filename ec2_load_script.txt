@@ -1,5 +1,40 @@
 #!/bin/bash
-sudo yum update -y
-sudo amazon-linux-extras install docker
-sudo service docker start
-sudo usermod -a -G docker ec2-user
+sudo cat > ~/passmaker.yaml <<EOF
+                apiVersion: apps/v1
+                kind: Deployment
+                metadata:
+                  name: passmaker
+                  labels:
+                    app: passmaker
+                spec:
+                  replicas: 1
+                  selector:
+                    matchLabels:
+                      app: passmaker
+                  template:
+                    metadata:
+                      labels:
+                        app: passmaker
+                    spec:
+                      containers:
+                      - name: passmaker
+                        image: nrdevac1/passmaker:latest
+                        ports:
+                        - containerPort: 80
+                        resources:
+                          limits: 
+                            memory: "500Mi"
+                            cpu: "500m"
+                ---
+                apiVersion: v1
+                kind: Service
+                metadata:
+                  name: passmaker-svc
+                spec:
+                  selector:
+                    app.kubernetes.io/name: passmaker
+                  ports:
+                    - protocol: TCP
+                      port: 443
+                      targetPort: 80
+                EOF
