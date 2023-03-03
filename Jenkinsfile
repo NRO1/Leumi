@@ -44,48 +44,6 @@ pipeline {
             aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN} 
             sleep 20
 
-            if [ ! -f "~/passmaker.yaml" ]
-              then
-                sudo cat > ~/passmaker.yaml <<EOF
-                    apiVersion: apps/v1
-                    kind: Deployment
-                    metadata:
-                      name: passmaker
-                      labels:
-                        app: passmaker
-                    spec:
-                      replicas: 1
-                      selector:
-                        matchLabels:
-                          app: passmaker
-                      template:
-                        metadata:
-                          labels:
-                            app: passmaker
-                        spec:
-                          containers:
-                          - name: passmaker
-                            image: nrdevac1/passmaker:latest
-                            ports:
-                            - containerPort: 80
-                            resources:
-                              limits: 
-                                memory: "500Mi"
-                                cpu: "500m"
-                    ---
-                    apiVersion: v1
-                    kind: Service
-                    metadata:
-                      name: passmaker-svc
-                    spec:
-                      selector:
-                        app.kubernetes.io/name: passmaker
-                      ports:
-                        - protocol: TCP
-                          port: 443
-                          targetPort: 80
-                EOF
-
             curl -sSLf https://get.k0s.sh | sh
             curl --output /usr/local/sbin/kubectl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
             sudo chmod +x /usr/local/sbin/kubectl
@@ -95,6 +53,47 @@ pipeline {
             sudo k0s server -c ${HOME}/.k0s/k0s.yaml --enable-worker &
             sudo cat /var/lib/k0s/pki/admin.conf | tee ~/.k0s/kubeconfig
             export KUBECONFIG="${HOME}/.k0s/kubeconfig"
+
+            sudo cat > passmaker.yaml <<EOF
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: passmaker
+              labels:
+                app: passmaker
+            spec:
+              replicas: 1
+              selector:
+                matchLabels:
+                  app: passmaker
+              template:
+                metadata:
+                  labels:
+                    app: passmaker
+                spec:
+                  containers:
+                  - name: passmaker
+                    image: nrdevac1/passmaker:latest
+                    ports:
+                    - containerPort: 80
+                    resources:
+                      limits: 
+                        memory: "500Mi"
+                        cpu: "500m"
+            ---
+            apiVersion: v1
+            kind: Service
+            metadata:
+              name: passmaker-svc
+            spec:
+              selector:
+                app.kubernetes.io/name: passmaker
+              ports:
+                - protocol: TCP
+                  port: 443
+                  targetPort: 80
+            EOF
+            
             kubectl apply -f passmaker.yaml
              '''
            }
