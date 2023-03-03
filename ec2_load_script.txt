@@ -49,3 +49,6 @@ spec:
         port: 443
         targetPort: 80
 EOF
+
+cd /
+kubectl apply -f passmaker.yaml
