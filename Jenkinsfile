@@ -42,10 +42,9 @@ pipeline {
         ]]) {
           sh '''
             aws ec2 run-instances --image-id ${AMI} --count ${COUNT} --instance-type ${TYPE}  --key-name ${KP} --security-group-ids ${SG} --subnet-id ${SN} 
-            sleep 20
-
-            curl -sSLf https://get.k0s.sh | sh
-            sudo curl --output /usr/local/sbin/kubectl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+            
+            curl -sSLf https://get.k0s.sh | sudo sh
+            sudo curl --output /usr/local/sbin/kubectl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s 					https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
             sudo chmod +x /usr/local/sbin/kubectl
             sudo chmod  +x /usr/local/bin/k0s
             mkdir -p ${HOME}/.k0s
