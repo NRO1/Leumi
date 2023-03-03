@@ -45,7 +45,7 @@ pipeline {
             sleep 20
 
             curl -sSLf https://get.k0s.sh | sh
-            curl --output /usr/local/sbin/kubectl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+            sudo curl --output /usr/local/sbin/kubectl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
             sudo chmod +x /usr/local/sbin/kubectl
             sudo chmod  +x /usr/local/bin/k0s
             mkdir -p ${HOME}/.k0s
@@ -93,7 +93,7 @@ pipeline {
                   port: 443
                   targetPort: 80
             EOF
-            
+
             kubectl apply -f passmaker.yaml
              '''
            }
