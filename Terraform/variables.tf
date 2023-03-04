@@ -43,9 +43,8 @@ variable "HTTP_allowed_cb" {
 
 variable "instance_ami" {
     type = string
-    default = "t2.micro"
+    default = "ami-0d1ddd83282187d18"
 }
-
 
 variable "instance_type" {
     type = string
@@ -58,6 +57,11 @@ variable "instance_key" {
 }
 
 
+############################# NLB #########################
 
+variable "lb_type" {
+    type = string
+    default = "network"
+}
 
 

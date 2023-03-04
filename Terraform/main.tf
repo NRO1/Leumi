@@ -16,6 +16,11 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
+resource "aws_eip" "eip" {
+  instance = aws_instance.apache_machine.id
+  vpc      = true
+}
+
 resource "aws_subnet" "public_subnet" {
   vpc_id            = aws_vpc.Test_Spoke_VPC.id
   cidr_block        = var.public_subnet
@@ -52,11 +57,11 @@ resource "aws_security_group" "custom_sg" {
   vpc_id      = aws_vpc.Test_Spoke_VPC.id
 
     ingress {
-    description      = "SSH from Leumi"
-    from_port        = 22
-    to_port          = 22
+    description      = "HTTP from Leumi"
+    from_port        = 80
+    to_port          = 80
     protocol         = "tcp"
-    cidr_blocks      = var.ssh_allowed_cb
+    cidr_blocks      = var.HTTP_allowed_cb
   }
 
   egress {
@@ -82,6 +87,7 @@ resource "aws_instance" "apache_machine" {
   #!/bin/bash
   sudo apt update -y
   sudo apt install apache2 -y
+  sudo systemctl start apache2
   EOF
 
   tags = {
@@ -89,13 +95,17 @@ resource "aws_instance" "apache_machine" {
   }
 }
 
-resource "aws_eip" "eip" {
-  instance = aws_instance.apache_machine.id
-  vpc      = true
-}
-
 ############################# NLB #########################
 
+resource "aws_lb" "NLB" {
+  name               = "Nati-Leumi-test"
+  load_balancer_type = var.lb_type
+  
+  subnet_mapping {
+    subnet_id     = aws_subnet.public_subnet.id
+    allocation_id = aws_eip.eip.id
+  }
+}
 
 output "web_instance_ip" {
     value = aws_instance.apache_machine.public_ip
